@@ -53,8 +53,12 @@ def login_view(request):
             password = form.cleaned_data['password']
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                login(request, user)
-                return redirect('dashboard')
+                if user.is_staff:
+                    login(request, user)
+                    return redirect('employer_dashboard')
+                else:
+                    login(request, user)
+                    return redirect('dashboard')
             else:
                 form.add_error('email', "Invalid email or password.")
     else:

@@ -1,0 +1,66 @@
+{% extends 'employer/base.html' %}
+{% block content %}
+    <div class="wrapper">
+        <div class="inner">
+            <form method="post">
+                {% csrf_token %}
+                <h3>Create a New Job</h3>
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="form-wrapper">
+                    <label for="id_title">Job Title</label>
+                    <input type="text" class="form-control" id="id_title" name="title">
+                </div>
+
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label for="id_company">Company</label>
+                        <input type="text" class="form-control" id="id_company" name="company" required>
+                    </div>
+                    <div class="form-wrapper">
+                        <label for="id_location">Location</label>
+                        <input type="text" class="form-control" id="id_location" name="location" required>
+                    </div>
+                </div>
+
+                <div class="form-wrapper">
+                    <label for="id_summary">Summary</label>
+                    <textarea class="form-control" id="id_summary" name="summary" style="height: 100px"></textarea>
+                </div>
+
+                <div class="form-wrapper">
+                    <label for="id_description">Detail Description</label>
+                    <textarea  class="form-control" id="id_description" name="description" style="height: 100px"></textarea>
+                </div>
+
+                <div class="form-wrapper">
+                    <label for="id_requirements">Requirements</label>
+                    <textarea  class="form-control" id="id_requirements" name="requirements" style="height: 100px"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label for="id_start_date">Start Date</label>
+                        <input type="date" class="form-control" id="id_start_date" name="start_date" required>
+                    </div>
+                    <div class="form-wrapper">
+                        <label for="id_end_date">End Date</label>
+                        <input type="date" class="form-control" id="id_end_date" name="end_date" required>
+                    </div>
+                </div>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
