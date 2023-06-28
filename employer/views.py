@@ -1,5 +1,8 @@
+
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.utils import timezone
 
 from employer.forms import JobForm
 from employer.models import Job
@@ -45,5 +48,7 @@ def create_job(request):
 @login_required(login_url='/login/')
 def job_list(request):
     if request.method == 'GET':
-        jobs = Job.objects.all()
-        return render(request, 'employer/job-list.html', {'jobs': jobs})
+        today = timezone.now().date()
+        jobs = Job.objects.filter(end_date__gte=today)
+        expired_jobs = Job.objects.filter(end_date__lt=today)
+        return render(request, 'employer/job-list.html', {'jobs': jobs,"expired_jobs":expired_jobs})
