@@ -19,7 +19,7 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 from users.views import register, dashboard, account_view
 from users.views import login_view
-from employer.views import employer_dashboard, create_job
+from employer.views import employer_dashboard, create_job, job_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +30,6 @@ urlpatterns = [
     path('account/', account_view, name='account'),
     path('logout/', LogoutView.as_view(next_page='/dashboard'), name='logout'),
     path('employer/dashboard/', employer_dashboard, name='employer_dashboard'),
-    path('employer/create-job/', create_job, name='create_job')
+    path('employer/create-job/', create_job, name='create_job'),
+    path('employer/job-list/', job_list, name='job_list')
 ]

@@ -41,3 +41,9 @@ def create_job(request):
         form = JobForm()
 
     return render(request, 'employer/create-job.html',{'form': form})
+
+@login_required(login_url='/login/')
+def job_list(request):
+    if request.method == 'GET':
+        jobs = Job.objects.all()
+        return render(request, 'employer/job-list.html', {'jobs': jobs})
