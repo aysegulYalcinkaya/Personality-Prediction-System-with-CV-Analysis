@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path
-from users.views import register, dashboard, account_view
+from users.views import register, dashboard, account_view, available_job_list
 from users.views import login_view
 from employer.views import employer_dashboard, create_job, job_list
 
@@ -25,7 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
-    path('/', login_view, name='login'),
+    path('job-list/', available_job_list, name='available_jobs'),
+    path('', login_view, name='home'),
     path('dashboard/', dashboard, name='dashboard'),
     path('account/', account_view, name='account'),
     path('logout/', LogoutView.as_view(next_page='/dashboard'), name='logout'),

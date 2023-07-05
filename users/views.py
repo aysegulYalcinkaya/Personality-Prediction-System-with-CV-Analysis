@@ -2,6 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.utils import timezone
+
+from employer.models import Job
 from .forms import RegisterForm, LoginForm, AccountForm
 from .models import CustomUser
 
@@ -101,3 +104,10 @@ def account_view(request):
 
         # Render the template with the user data
     return render(request, 'account.html', {'user': user})
+
+@login_required(login_url='/login/')
+def available_job_list(request):
+    if request.method == 'GET':
+        today = timezone.now().date()
+        jobs = Job.objects.filter(end_date__gte=today)
+        return render(request, 'job-list.html', {'jobs': jobs})
