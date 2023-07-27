@@ -57,18 +57,18 @@ python manage.py runserver 8000
 * Display Analysis Results (Employer)
 
 ## Screenshots
-![](static\screenshots\login.png)
+![Login](static/screenshots/login.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\user_joblist.png)
+![User Job List](static/screenshots/user_joblist.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\user_jobdetail.png)
+![User Job Detail](static/screenshots/user_jobdetail.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\cvupload.png)
+![User CV Upload](static/screenshots/cvupload.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\employer_dashboard.png)
+![Employer Dashboard](static/screenshots/employer_dashboard.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\create_job.png)
+![Employer Create Job](static/screenshots/create_job.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\employer_joblist.png)
+![Employer Job List](static/screenshots/employer_joblist.png)
 
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\employer_editjob.png)
+![Employer Edit Job](static/screenshots/employer_editjob.png)
