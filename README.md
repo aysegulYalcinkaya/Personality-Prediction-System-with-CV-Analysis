@@ -57,7 +57,7 @@ python manage.py runserver 8000
 * Display Analysis Results (Employer)
 
 ## Screenshots
-![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\login.png)
+![](static\screenshots\login.png)
 
 ![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\user_joblist.png)
 
