@@ -1,7 +1,6 @@
 
-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from employer.forms import JobForm
@@ -28,7 +27,7 @@ def create_job(request):
             end_date = form.cleaned_data['end_date']
 
             job = Job()
-            job.title=title
+            job.title =title
             job.company = company
             job.location = location
             job.summary = summary
@@ -43,12 +42,21 @@ def create_job(request):
     else:
         form = JobForm()
 
-    return render(request, 'employer/create-job.html',{'form': form})
+    return render(request, 'employer/create-job.html' ,{'form': form})
 
-@login_required(login_url='/login/')
+
 def job_list(request):
     if request.method == 'GET':
         today = timezone.now().date()
         jobs = Job.objects.filter(end_date__gte=today)
         expired_jobs = Job.objects.filter(end_date__lt=today)
-        return render(request, 'employer/job-list.html', {'jobs': jobs,"expired_jobs":expired_jobs})
+        return render(request, 'employer/job-list.html', {'jobs': jobs ,"expired_jobs" :expired_jobs})
+
+@login_required(login_url='/login/')
+def edit_job_detail(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    context = {
+        'job': job
+    }
+    return render(request, 'edit-job-detail.html', context)

@@ -27,3 +27,7 @@ class AccountForm(forms.Form):
     city = forms.CharField()
     state = forms.CharField()
     phone_number = forms.CharField()
+
+
+class UploadForm(forms.Form):
+    job_id = forms.CharField()

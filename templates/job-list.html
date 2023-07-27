@@ -2,7 +2,7 @@
 {% block content %}
 
     <div class="mt-3 mb-3">
-        <form method="GET" action="{% url 'job_list' %}" style="width: 100%;padding-left: 10px">
+        <form method="GET" action="{% url 'available_jobs' %}" style="width: 100%;padding-left: 10px">
             <div class="row">
                 <div class="col-md-3">
                     <input class="form-control" type="text" name="title" placeholder="Job Tittle">
@@ -35,19 +35,29 @@
         <tbody>
         {% for job in jobs %}
             <tr>
-                <td>{{ job.title }}</td>
+                <td><a href="/job-detail/{{ job.id }}">{{ job.title }}</a></td>
                 <td>{{ job.company }}</td>
                 <td>{{ job.location }}</td>
                 <td>{{ job.summary }}</td>
                 <td>{{ job.start_date }}</td>
                 <td>{{ job.end_date }}</td>
-                <td><input type="button" class="btn btn-primary" value="Apply"></td>
+                <td>
+                    {% if job.applied %}
+                        <input type="button" disabled class="btn btn-primary" value="Already Applied">
+                    {% else %}
+                        <input type="button" class="btn btn-primary" value="Apply" onclick="apply({{ job.id }})">
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
 
 
     </table>
-
+<script>
+function apply(id){
+     window.location.href = '/job-detail/'+id;
+}
+</script>
 
 {% endblock %}

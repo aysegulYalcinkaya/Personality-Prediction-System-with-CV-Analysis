@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from employer.models import Job
 from .managers import CustomUserManager
 
 
@@ -25,3 +26,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class JobApplication(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    resume_text = models.TextField()
+
+    def __str__(self):
+        return f"Job Application - Job ID: {self.job_id}, User ID: {self.user_id}"
