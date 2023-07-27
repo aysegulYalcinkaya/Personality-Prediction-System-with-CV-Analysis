@@ -57,5 +57,18 @@ python manage.py runserver 8000
 * Display Analysis Results (Employer)
 
 ## Screenshots
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\login.png)
 
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\user_joblist.png)
 
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\user_jobdetail.png)
+
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\cvupload.png)
+
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\employer_dashboard.png)
+
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\create_job.png)
+
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\employer_joblist.png)
+
+![](C:\Users\Dell\Documents\LECTURENOTES\CAPSTONE\CVAnalysis\static\screenshots\employer_editjob.png)
