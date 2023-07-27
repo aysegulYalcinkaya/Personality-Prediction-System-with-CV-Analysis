@@ -51,10 +51,10 @@ python manage.py runserver 8000
 * Dashboard (User and Employer)
 * Job List (User and Employer)
   ** Create new Job (Employer)
-* Personality test (will be implemented)
-* Job Application and CV Upload (will be implemented)
-* CV analysis (will be implemented)
-* Display Analysis Results (Employer - will be implemented)
+* Personality test (User)
+* Job Application and CV Upload (User)
+* CV analysis (Employer)
+* Display Analysis Results (Employer)
 
 ## Screenshots
 
