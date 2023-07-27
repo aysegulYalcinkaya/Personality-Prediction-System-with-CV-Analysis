@@ -2,6 +2,7 @@ from django import forms
 
 
 class JobForm(forms.Form):
+    id=forms.IntegerField()
     title = forms.CharField()
     company = forms.CharField()
     location = forms.CharField()

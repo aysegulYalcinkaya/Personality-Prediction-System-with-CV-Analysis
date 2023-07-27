@@ -1,47 +1,67 @@
-{% extends 'base.html' %}
+{% extends 'employer/base.html' %}
 
 {% block content %}
 
-    <div class="inner">
-
-        <h3>{{ job.title }}</h3>
-
-        <div>
-            <b>Company:</b> {{ job.company }}
-        </div>
-        <div>
-            <b>Location:</b>{{ job.location }}
-        </div>
-        <div>
-            <b>Summary:</b>{{ job.summary }}
-        </div>
-        <div>
-            <b>Description:</b>{{ job.description }}
-        </div>
-        <div>
-            <b>Requirements:</b>{{ job.requirements }}
-        </div>
-        <div class="mt-3"><input type="button" class="btn btn-primary" value="Upload Resume & Apply"
-                                 onclick="openModal()"></div>
-    </div>
-
-    <div class="modal" id="uploadModal">
-        <div class="modal-content inner">
-            <h3>Upload Your Resume</h3>
-            <form method="post" enctype="multipart/form-data">
+    <div class="wrapper">
+        <div class="inner">
+            <form method="post">
                 {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="hidden" name="job_id" value="{{ job.id }}" id="job_id">
-                        <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" class="form-control">
+                <h3>Edit Job</h3>
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <div class="col-md-6">
-                        <button type="submit" value="Upload" onclick="uploadResume()">Upload</button>
+                {% endif %}
+
+                <div class="form-wrapper">
+                    <input id="id" name="id" value="{{ job.id }}" style="display: none">
+                    <label for="id_title">Job Title</label>
+                    <input type="text" class="form-control" id="id_title" name="title" value="{{ job.title }}">
+                </div>
+
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label for="id_company">Company</label>
+                        <input type="text" class="form-control" id="id_company" name="company" required value="{{ job.company }}">
                     </div>
-                    <div class="col-md-6">
-                        <button type="reset" value="Cancel" onclick="closeModal()">Cancel</button>
+                    <div class="form-wrapper">
+                        <label for="id_location">Location</label>
+                        <input type="text" class="form-control" id="id_location" name="location" required value="{{ job.location }}">
                     </div>
                 </div>
+
+                <div class="form-wrapper">
+                    <label for="id_summary">Summary</label>
+                    <textarea class="form-control" id="id_summary" name="summary" style="height: 100px">{{ job.summary }}</textarea>
+                </div>
+
+                <div class="form-wrapper">
+                    <label for="id_description">Detail Description</label>
+                    <textarea  class="form-control" id="id_description" name="description" style="height: 100px">{{ job.description }}</textarea>
+                </div>
+
+                <div class="form-wrapper">
+                    <label for="id_requirements">Requirements</label>
+                    <textarea  class="form-control" id="id_requirements" name="requirements" style="height: 100px">{{ job.requirements }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label for="id_start_date">Start Date</label>
+                        <input type="date" class="form-control" id="id_start_date" name="start_date" required value="{{ job.start_date }}">
+                    </div>
+                    <div class="form-wrapper">
+                        <label for="id_end_date">End Date</label>
+                        <input type="date" class="form-control" id="id_end_date" name="end_date" required value="{{ job.end_date }}">
+                    </div>
+                </div>
+                <button type="submit">Save</button>
             </form>
         </div>
     </div>
@@ -49,64 +69,5 @@
         form {
             width: 100%;
         }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            width: 800px;
-        }
     </style>
-    <script>
-        function openModal() {
-            document.getElementById('uploadModal').style.display = 'block';
-        }
-
-        function uploadResume() {
-            const fileInput = document.getElementById('pdf_file');
-            const file = fileInput.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('pdf_file', file);
-                formData.append('job_id', document.getElementById('job_id').value)
-                // Send a POST request to the upload view
-                fetch('{% url "upload_pdf" %}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if ('message' in data) {
-                            alert(data.message);
-                        } else {
-                            alert('Error uploading the PDF.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('uploadModal').style.display = 'none';
-        }
-    </script>
 {% endblock %}

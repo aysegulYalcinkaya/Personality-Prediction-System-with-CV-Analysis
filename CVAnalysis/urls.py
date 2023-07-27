@@ -34,6 +34,6 @@ urlpatterns = [
     path('employer/dashboard/', employer_dashboard, name='employer_dashboard'),
     path('employer/create-job/', create_job, name='create_job'),
     path('employer/job-list/', job_list, name='job_list'),
-    path('employer/job-detail/<int:job_id>/',edit_job_detail,name='edit_job_detail'),
+    path('employer/edit-job-detail/<int:job_id>/',edit_job_detail,name='edit_job_detail'),
     path('upload_pdf', upload_pdf, name='upload_pdf')
 ]
