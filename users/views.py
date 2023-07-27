@@ -64,7 +64,7 @@ def login_view(request):
                     return redirect('employer_dashboard')
                 else:
                     login(request, user)
-                    return redirect('dashboard')
+                    return redirect('available_jobs')
             else:
                 form.add_error('email', "Invalid email or password.")
     else:
