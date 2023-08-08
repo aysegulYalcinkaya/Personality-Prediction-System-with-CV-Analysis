@@ -5,6 +5,8 @@ from django.utils import timezone
 
 from employer.forms import JobForm
 from employer.models import Job
+from employer.forms import QuestionForm
+from personality_test.models import Question
 
 
 @login_required(login_url='/login/')
@@ -96,3 +98,33 @@ def employer_dashboard(request):
     if request.method == 'GET':
         jobs = Job.objects.annotate(num_applicants=Count('jobapplication'))
         return render(request, 'employer/dashboard.html', {'jobs': jobs})
+
+
+@login_required(login_url='/login/')
+def personality_test_edit(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = QuestionForm()
+
+    questions = Question.objects.all()
+    categorized_questions = {}
+
+    for category, _ in Question.CATEGORY_CHOICES:
+        categorized_questions[category] = questions.filter(category=category).order_by('id')
+
+    context = {
+        'form': form,
+        'categorized_questions': categorized_questions,
+    }
+
+    return render(request, 'employer/personality_test_edit.html', context)
+
+
+@login_required(login_url='/login/')
+def delete_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    question.delete()
+    return redirect('personality_test_edit')
