@@ -63,7 +63,7 @@
                 </div>
                 <div class="form-group">
                     <div class="form-wrapper">
-                        <label for="personality_1">1.Personality</label>
+                        <label for="personality_1">Important Personality</label>
                         <select class="form-control" id="personality_1" name="personality_1" required value="{{ job.personality_1 }}">
                             <option value="">Select</option>
                             <option value="Neuroticism" {% if job.personality_1 == 'Neuroticism' %}selected{% endif %}>Neuroticism</option>
@@ -74,7 +74,7 @@
                         </select>
                     </div>
                     <div class="form-wrapper" style="margin-right: 20px">
-                         <label for="personality_2">2.Personality</label>
+                         <label for="personality_2"> Moderate Personality</label>
                         <select class="form-control" id="personality_2" name="personality_2" required value="{{ job.personality_2 }}">
                             <option value="">Select</option>
                             <option value="Neuroticism" {% if job.personality_2 == 'Neuroticism' %}selected{% endif %}>Neuroticism</option>
@@ -85,7 +85,7 @@
                         </select>
                     </div>
                     <div class="form-wrapper">
-                         <label for="personality_3">3.Personality</label>
+                         <label for="personality_3">Less Important Personality</label>
                         <select class="form-control" id="personality_3" name="personality_3" required value="{{ job.personality_3 }}">
                            <option value="">Select</option>
                             <option value="Neuroticism" {% if job.personality_3 == 'Neuroticism' %}selected{% endif %}>Neuroticism</option>
