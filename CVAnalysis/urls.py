@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path
+
+from personality_test.views import personality_test
 from users.views import register, dashboard, account_view, available_job_list, upload_pdf, job_detail
 from users.views import login_view
-from employer.views import employer_dashboard, create_job, job_list, edit_job_detail
+from employer.views import employer_dashboard, create_job, job_list, edit_job_detail, personality_test_edit, \
+    delete_question, analyze
 
 urlpatterns = [
     path('admin/', admin.site.urls),

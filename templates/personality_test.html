@@ -1,26 +1,27 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Personality Test Questioner</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles_personality.css' %}">
-</head>
-<body>
-    <div class="container">
-        <h1 class="center-heading">Personality Test</h1>
+{% block content %}
+     <div class="inner justify-content-center">
+        <h3 class="center-heading">Personality Test</h3>
         <form id="personality-test-form" method="post">
             {% csrf_token %}
             {% for question in questions %}
                 {% with forloop.counter as question_number %}
-                <fieldset class="question">
-                    <p><strong>Question {{ question_number }}:</strong> {{ question.text }}</p>
-                    <div class="options">
-                        <label><input type="radio" name="response-{{ question.id }}" value="5" required>Strongly Agree</label>
-                        <label><input type="radio" name="response-{{ question.id }}" value="4">Agree</label>
-                        <label><input type="radio" name="response-{{ question.id }}" value="3">Neutral</label>
-                        <label><input type="radio" name="response-{{ question.id }}" value="2">Disagree</label>
-                        <label><input type="radio" name="response-{{ question.id }}" value="1">Strongly Disagree</label>
+                <fieldset class="question mb-3">
+                    <div class="mb-2"><strong>Question {{ question_number }}:</strong> {{ question.text }}</div>
+                    <div class="options form-check form-check-inline">
+                        <input class="response-input form-check-input" type="radio" name="response-{{ question.id }}" id="sa-{{ question.id }}" value="5" required><label class="form-check-label" for="sa-{{ question.id }}">Strongly Agree</label>
+                    </div>
+                     <div class="options form-check form-check-inline">
+                        <input class="response-input form-check-input" type="radio" name="response-{{ question.id }}" id="a-{{ question.id }} "value="4"><label class="form-check-label" for="a-{{ question.id }}">Agree</label>
+                     </div>
+                     <div class="options form-check form-check-inline">
+                        <input class="response-input form-check-input" type="radio" name="response-{{ question.id }}" id="n-{{ question.id }}" value="3"><label class="form-check-label" for="n-{{ question.id }}">Neutral</label>
+                     </div>
+                     <div class="options form-check form-check-inline">
+                        <input class="response-input form-check-input" type="radio" name="response-{{ question.id }}" id="d-{{ question.id }}" value="2"><label class="form-check-label" for="d-{{ question.id }}">Disagree</label>
+                      <div class="options form-check form-check-inline">
+                        <input class="response-input form-check-input" type="radio" name="response-{{ question.id }}" id="sd-{{ question.id }}" value="1"><label class="form-check-label" for="sd-{{ question.id }}">Strongly Disagree</label>
                     </div>
                 </fieldset>
                 {% endwith %}
@@ -36,6 +37,5 @@
             <div id="conscientiousness"></div>
         </div>
     </div>
-    <script src="{% static 'js/test_logic.js' %}"></script>
-</body>
-</html>
+    <script src="/static/js/test_logic.js"></script>
+{% endblock %}

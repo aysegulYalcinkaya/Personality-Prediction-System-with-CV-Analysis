@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from .models import Question, UserResponse
+from .models import Question, UserResponse, UserScore
 
 
 def personality_test(request):
@@ -30,8 +30,16 @@ def personality_test(request):
         # Calculate average scores for each category
         average_scores = {category: (data['total_score'] / data['count']) if data['count'] > 0 else 0 for
                           category, data in responses.items()}
-
-        return JsonResponse(average_scores)
+        userScore=UserScore()
+        userScore.user=user
+        userScore.neuroticism=average_scores["neuroticism"]
+        userScore.extroversion = average_scores["extroversion"]
+        userScore.openness = average_scores["openness"]
+        userScore.agreeableness = average_scores["agreeableness"]
+        userScore.conscientiousness = average_scores["conscientiousness"]
+        print (userScore)
+        userScore.save()
+        return JsonResponse({"msg":"Personality Test saved"})
 
     context = {'questions': questions}
     return render(request, 'personality_test.html', context)

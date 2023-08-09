@@ -22,26 +22,8 @@ $(document).ready(function () {
 
         // Send form data to the server using AJAX
         $.post("", formData, function (response) {
-            // Hide the questions and show the results
-            $("#personality-test-form").hide();
-            $("#results-container").show();
-
-            // Calculate and display results dynamically
-            var categories = {
-                'neuroticism': 0,
-                'extroversion': 0,
-                'openness': 0,
-                'agreeableness': 0,
-                'conscientiousness': 0
-            };
-
-            $.each(response, function (index, item) {
-                categories[item.category] += parseInt(item.response);
-            });
-
-            $.each(categories, function (category, score) {
-                $("#" + category).text(category + ": " + score);
-            });
-        });
+            alert(response.msg)
+            window.location.href = '/job-list';
+        }, "json");
     });
 });
