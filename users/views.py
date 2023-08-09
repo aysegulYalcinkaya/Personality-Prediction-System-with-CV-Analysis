@@ -1,3 +1,5 @@
+import time
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import models
@@ -11,6 +13,13 @@ from employer.models import Job
 from .forms import RegisterForm, LoginForm, AccountForm, UploadForm
 from .models import CustomUser, JobApplication
 import PyPDF2
+import boto3
+from botocore.exceptions import NoCredentialsError
+
+AWS_ACCESS_KEY_ID = 'AKIARSWFGF3EDTXQKJ66'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_BUCKET_NAME = 'cvanalysis-bucket'
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
 def register(request):
     if request.method == 'POST':
@@ -165,13 +174,27 @@ def upload_pdf(request):
 
     if request.method == 'POST' and request.FILES['pdf_file']:
         pdf_file = request.FILES['pdf_file']
-        text = extract_text_from_pdf(pdf_file)
+        try:
 
-        job_id=int(request.POST.get('job_id'))
-        job = get_object_or_404(Job, id=job_id)
-        user_id=request.user.id
-        job_application = JobApplication(job=job, user=request.user, resume_text=text)
-        job_application.save()
-        return JsonResponse({'message': 'Resume uploaded successfully'})
+            text = extract_text_from_pdf(pdf_file)
+
+            job_id=int(request.POST.get('job_id'))
+            job = get_object_or_404(Job, id=job_id)
+            user_id=request.user.id
+
+
+            timestamp = int(time.time())
+            pdf_filename = f"{timestamp}_{pdf_file.name}"
+            s3.upload_fileobj(pdf_file, AWS_BUCKET_NAME, pdf_filename)
+
+            # Construct the S3 URL for the uploaded PDF
+            pdf_url = f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{pdf_file.name}"
+
+            job_application = JobApplication(job=job, user=request.user, resume_text=text, resume_link=pdf_url)
+            job_application.save()
+
+            return JsonResponse({'message': 'Resume uploaded successfully'})
+        except NoCredentialsError:
+            return JsonResponse({'error': 'AWS credentials not available.'})
 
     return render(request, 'job-list.html')

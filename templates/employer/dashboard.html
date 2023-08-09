@@ -20,11 +20,39 @@
                 <td>{{ job.start_date }}</td>
                 <td>{{ job.end_date }}</td>
                 <td>{{ job.num_applicants }}</td>
-                <td><input type="button" class="btn btn-success" value="Run Analysis"/> </td>
+                <td><input type="button" class="btn btn-success" value="Run Analysis"
+                           onclick="run_analysis({{ job.id }});"/>
+                    <a href="analysis-result.html/{{ job.id }}"><input type="button" class="btn btn-success" id="display_{{ job.id }}" style="display: none" value="Display Results"
+                /></a></td>
             </tr>
         {% endfor %}
         </tbody>
 
 
     </table>
+
+    <script>
+        function run_analysis(jobid) {
+            fetch('{% url "analyze" %}', {
+                method: 'POST',
+                body: JSON.stringify({jobid: jobid}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                    .then(data => {
+                        if ('result' in data) {
+                            if (data.result)
+                                document.getElementById('display_'+jobid).style.display="inline";
+                        } else {
+                            alert('Error uploading the PDF.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+        }
+    </script>
 {% endblock %}

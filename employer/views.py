@@ -1,11 +1,15 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from sentence_transformers import util
 
 from employer.forms import JobForm
 from employer.models import Job
-
+from users.models import JobApplication
+from sentence_transformers import SentenceTransformer
 
 @login_required(login_url='/login/')
 def employer_dashboard(request):
@@ -96,3 +100,33 @@ def employer_dashboard(request):
     if request.method == 'GET':
         jobs = Job.objects.annotate(num_applicants=Count('jobapplication'))
         return render(request, 'employer/dashboard.html', {'jobs': jobs})
+
+@login_required(login_url='/login')
+def analyze(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        jobid = data.get('jobid')
+
+        job = get_object_or_404(Job, id=jobid)
+        jobtxt =job.description
+
+        applicants=JobApplication.objects.filter(job__id=jobid)
+        resumestxt=[]
+        for applicant in applicants:
+            resumestxt.append(applicant.resume_text)
+
+        model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
+        query_embedding = model.encode(jobtxt)
+        passage_embedding = model.encode(resumestxt)
+
+        similarity=util.dot_score(query_embedding, passage_embedding)
+
+        result=similarity.tolist()
+        index=0
+        for applicant in applicants:
+            print(result[index][0])
+            applicant.similarity=result[index][0]
+            applicant.save()
+
+        return render(request, 'employer/dashboard.html')

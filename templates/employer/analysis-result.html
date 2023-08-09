@@ -1,0 +1,6 @@
+{% extends 'employer/base.html' %}
+{% block content %}
+    {% for applicant in applicants %}
+        <div>{{ applicant.user.first_name }} {{ similarity }}</div>
+    {% endfor %}
+{% endblock %}

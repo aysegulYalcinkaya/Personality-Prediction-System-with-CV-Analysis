@@ -95,6 +95,7 @@
                     .then(data => {
                         if ('message' in data) {
                             alert(data.message);
+                             window.location.href = '{% url "available_jobs" %}';
                         } else {
                             alert('Error uploading the PDF.');
                         }
