@@ -21,7 +21,9 @@ from botocore.exceptions import NoCredentialsError
 AWS_ACCESS_KEY_ID = 'AKIARSWFGF3EDTXQKJ66'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_BUCKET_NAME = 'cvanalysis-bucket'
-s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+AWS_S3_REGION_NAME ='us-east-2'
+
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY, region_name=AWS_S3_REGION_NAME)
 
 def register(request):
     if request.method == 'POST':
@@ -211,10 +213,11 @@ def upload_pdf(request):
 
             timestamp = int(time.time())
             pdf_filename = f"{timestamp}_{pdf_file.name}"
-            s3.upload_fileobj(pdf_file, AWS_BUCKET_NAME, pdf_filename)
+            with pdf_file.open(mode='rb') as pdf_file_obj:
+                s3.upload_fileobj(pdf_file_obj, AWS_BUCKET_NAME, pdf_filename, ExtraArgs={'ContentType': 'application/pdf'})
 
             # Construct the S3 URL for the uploaded PDF
-            pdf_url = f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{pdf_file.name}"
+            pdf_url = f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{pdf_filename}"
 
             personality_test=get_object_or_404(UserScore, user_id=user_id)
             personality=calculate_personality_result(job,personality_test)
