@@ -1,5 +1,6 @@
 import time
 
+from _decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import models
@@ -10,6 +11,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 from employer.models import Job
+from personality_test.models import UserScore
 from .forms import RegisterForm, LoginForm, AccountForm, UploadForm
 from .models import CustomUser, JobApplication
 import PyPDF2
@@ -169,6 +171,29 @@ def extract_text_from_pdf(pdf_file):
     print(text)
     return text
 
+def calculate_personality_result(job,personality_test):
+    personality=[]
+    print(job)
+    personality.append({job.personality_1: 0.75})
+    personality.append({job.personality_2: 0.50})
+    personality.append({job.personality_3: 0.25})
+    result=0
+    for per in personality:
+        personality_trait = list(per.keys())[0]  # Extract the personality trait
+        weight = list(per.values())[0]  # Extract the weight
+        if personality_trait.lower()=="neuroticism":
+            result += personality_test.neuroticism * Decimal(weight)
+        elif personality_trait.lower()=="extroversion":
+            result += personality_test.extroversion * Decimal(weight)
+        elif personality_trait.lower()=="agreeableness":
+            result += personality_test.agreeableness * Decimal(weight)
+        elif personality_trait.lower()=="conscientiousness":
+            result += personality_test.conscientiousness * Decimal(weight)
+        elif personality_trait.lower()=="openness":
+            result += personality_test.openness * Decimal(weight)
+        print(result)
+    return "{:.2f}".format(result)
+
 @login_required(login_url='/login/')
 def upload_pdf(request):
 
@@ -190,7 +215,9 @@ def upload_pdf(request):
             # Construct the S3 URL for the uploaded PDF
             pdf_url = f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{pdf_file.name}"
 
-            job_application = JobApplication(job=job, user=request.user, resume_text=text, resume_link=pdf_url)
+            personality_test=get_object_or_404(UserScore, user_id=user_id)
+            personality=calculate_personality_result(job,personality_test)
+            job_application = JobApplication(job=job, user=request.user, resume_text=text, resume_link=pdf_url,personality=personality)
             job_application.save()
 
             return JsonResponse({'message': 'Resume uploaded successfully'})

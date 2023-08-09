@@ -33,6 +33,7 @@ class JobApplication(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     resume_text = models.TextField()
     resume_link = models.TextField()
-    similarity=models.DecimalField(None,decimal_places=6,max_digits=6)
+    similarity=models.DecimalField(null=True,decimal_places=2,max_digits=5)
+    personality = models.DecimalField(null=True, decimal_places=2, max_digits=3)
     def __str__(self):
         return f"Job Application - Job ID: {self.job_id}, User ID: {self.user_id}"

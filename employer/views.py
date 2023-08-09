@@ -76,6 +76,9 @@ def edit_job_detail(request, job_id):
             requirements = form.cleaned_data['requirements']
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
+            personality_1=form.cleaned_data['personality_1']
+            personality_2 = form.cleaned_data['personality_2']
+            personality_3 = form.cleaned_data['personality_3']
 
             job = get_object_or_404(Job, id=id)
             job.title = title
@@ -86,6 +89,9 @@ def edit_job_detail(request, job_id):
             job.requirements = requirements
             job.start_date = start_date
             job.end_date = end_date
+            job.personality_1=personality_1
+            job.personality_2=personality_2
+            job.personality_3=personality_3
 
             job.save()
 
@@ -93,9 +99,13 @@ def edit_job_detail(request, job_id):
     else:
 
         job = get_object_or_404(Job, id=job_id)
+        formatted_start_date = job.start_date.strftime('%Y-%m-%d')
+        formatted_end_date = job.end_date.strftime('%Y-%m-%d')
 
         context = {
-            'job': job
+            'job': job,
+            'formatted_start_date': formatted_start_date,
+            'formatted_end_date': formatted_end_date
         }
         return render(request, 'employer/edit-job-detail.html', context)
 
@@ -104,7 +114,8 @@ def edit_job_detail(request, job_id):
 def employer_dashboard(request):
     if request.method == 'GET':
         jobs = Job.objects.annotate(num_applicants=Count('jobapplication'),
-                                    num_similarity_check=Count('jobapplication', filter=~Q(jobapplication__similarity__isnull=True)))
+                                    num_similarity_check=Count('jobapplication',
+                                                               filter=~Q(jobapplication__similarity__isnull=True)))
         return render(request, 'employer/dashboard.html', {'jobs': jobs})
 
 
@@ -133,9 +144,9 @@ def analyze(request):
         index = 0
         for applicant in applicants:
             print(result[0][index])
-            applicant.similarity = result[0][index]
+            applicant.similarity = "{:.2f}".format(result[0][index] * 100)
             applicant.save()
-            index+=1
+            index += 1
 
         return JsonResponse({"msg": "Resume analysis completed"})
 
@@ -144,7 +155,7 @@ def analyze(request):
 def analysis_result(request, job_id):
     if request.method == 'GET':
         applicants = JobApplication.objects.filter(job__id=job_id).order_by("-similarity")
-        job = Job.objects.filter(id = job_id)
+        job = Job.objects.filter(id=job_id)
 
         return render(request, 'employer/analysis-result.html', {'applicants': applicants, 'job': job[0]})
 

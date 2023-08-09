@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from users.models import JobApplication
+from users.views import calculate_personality_result
+
 
 class UsersManagersTests(TestCase):
 
@@ -37,3 +40,17 @@ class UsersManagersTests(TestCase):
             User.objects.create_superuser(
                 email="admin@test.com", password="admin", is_superuser=False)
 
+    def test_personality_comparison(self):
+        job = {
+            'personality_1': 'Neuroticism',
+            'personality_2': 'Agreeableness',
+            'personality_3': 'Openness'
+        }
+        personality_test = {
+            'neuroticism': 3.5,
+            'agreeableness': 2,
+            'openness': 4
+        }
+
+        result = calculate_personality_result(job, personality_test)
+        self.assertIsNotNone(result)  # You can add more specific assertions based on your function's behavior

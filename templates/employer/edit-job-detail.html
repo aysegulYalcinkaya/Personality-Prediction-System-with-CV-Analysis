@@ -54,14 +54,50 @@
                 <div class="form-group">
                     <div class="form-wrapper">
                         <label for="id_start_date">Start Date</label>
-                        <input type="date" class="form-control" id="id_start_date" name="start_date" required value="{{ job.start_date }}">
+                        <input type="date" class="form-control" id="id_start_date" name="start_date" required value="{{ formatted_start_date }}">
                     </div>
                     <div class="form-wrapper">
                         <label for="id_end_date">End Date</label>
-                        <input type="date" class="form-control" id="id_end_date" name="end_date" required value="{{ job.end_date }}">
+                        <input type="date" class="form-control" id="id_end_date" name="end_date" required value="{{ formatted_end_date }}">
                     </div>
                 </div>
-                <button type="submit">Save</button><a href="/employer/job-list"><button type="reset">Cancel</button></a>
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label for="personality_1">1.Personality</label>
+                        <select class="form-control" id="personality_1" name="personality_1" required value="{{ job.personality_1 }}">
+                            <option value="">Select</option>
+                            <option value="Neuroticism" {% if job.personality_1 == 'Neuroticism' %}selected{% endif %}>Neuroticism</option>
+                            <option value="Extroversion" {% if job.personality_1 == 'Extroversion' %}selected{% endif %}>Extroversion</option>
+                            <option value="Openness" {% if job.personality_1 == 'Openness' %}selected{% endif %}>Openness</option>
+                            <option value="Agreeableness" {% if job.personality_1 == 'Agreeableness' %}selected{% endif %}>Agreeableness</option>
+                            <option value="Conscientiousness" {% if job.personality_1 == 'Conscientiousness' %}selected{% endif %}>Conscientiousness</option>
+                        </select>
+                    </div>
+                    <div class="form-wrapper" style="margin-right: 20px">
+                         <label for="personality_2">2.Personality</label>
+                        <select class="form-control" id="personality_2" name="personality_2" required value="{{ job.personality_2 }}">
+                            <option value="">Select</option>
+                            <option value="Neuroticism" {% if job.personality_2 == 'Neuroticism' %}selected{% endif %}>Neuroticism</option>
+                            <option value="Extroversion" {% if job.personality_2 == 'Extroversion' %}selected{% endif %}>Extroversion</option>
+                            <option value="Openness" {% if job.personality_2 == 'Openness' %}selected{% endif %}>Openness</option>
+                            <option value="Agreeableness" {% if job.personality_2 == 'Agreeableness' %}selected{% endif %}>Agreeableness</option>
+                            <option value="Conscientiousness" {% if job.personality_2 == 'Conscientiousness' %}selected{% endif %}>Conscientiousness</option>
+                        </select>
+                    </div>
+                    <div class="form-wrapper">
+                         <label for="personality_3">3.Personality</label>
+                        <select class="form-control" id="personality_3" name="personality_3" required value="{{ job.personality_3 }}">
+                           <option value="">Select</option>
+                            <option value="Neuroticism" {% if job.personality_3 == 'Neuroticism' %}selected{% endif %}>Neuroticism</option>
+                            <option value="Extroversion" {% if job.personality_3 == 'Extroversion' %}selected{% endif %}>Extroversion</option>
+                            <option value="Openness" {% if job.personality_3 == 'Openness' %}selected{% endif %}>Openness</option>
+                            <option value="Agreeableness" {% if job.personality_3 == 'Agreeableness' %}selected{% endif %}>Agreeableness</option>
+                            <option value="Conscientiousness" {% if job.personality_3 == 'Conscientiousness' %}selected{% endif %}>Conscientiousness</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><button type="submit">Save</button>
+                    <button type="submit" onclick="window.location.href='{% url 'job_list' %}'">Cancel</button></div>
             </form>
         </div>
     </div>

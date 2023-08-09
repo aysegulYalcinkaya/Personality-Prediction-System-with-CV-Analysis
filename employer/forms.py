@@ -12,6 +12,9 @@ class JobForm(forms.Form):
     requirements = forms.CharField()
     start_date = forms.DateField()
     end_date = forms.DateField()
+    personality_1=forms.CharField()
+    personality_2 = forms.CharField()
+    personality_3 = forms.CharField()
 
 
 class QuestionForm(forms.ModelForm):
