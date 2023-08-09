@@ -22,7 +22,7 @@ from personality_test.views import personality_test
 from users.views import register, dashboard, account_view, available_job_list, upload_pdf, job_detail
 from users.views import login_view
 from employer.views import employer_dashboard, create_job, job_list, edit_job_detail, personality_test_edit, \
-    delete_question, analyze
+    delete_question, analyze, analysis_result
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,5 +42,6 @@ urlpatterns = [
     path('personality_test/', personality_test, name='personality_test'),
     path('personality_test_edit/', personality_test_edit, name='personality_test_edit'),
     path('employer/delete_question/<int:question_id>/', delete_question, name='delete_question'),
-    path('employer/analyze', analyze, name='analyze')
+    path('employer/analyze', analyze, name='analyze'),
+    path('employer/analysis-result/<int:job_id>/', analysis_result, name='analysis_result')
 ]

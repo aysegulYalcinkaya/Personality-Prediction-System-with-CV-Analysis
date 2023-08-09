@@ -1,6 +1,33 @@
 {% extends 'employer/base.html' %}
 {% block content %}
-    {% for applicant in applicants %}
-        <div>{{ applicant.user.first_name }} {{ similarity }}</div>
-    {% endfor %}
+<div class="inner">
+     <h2>Resume Analysis Result</h2>
+    <h3>{{ job.title }}</h3>
+    <table class="table table-striped">
+        <thead>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+        <th>Resume</th>
+        <th>Personality Score</th>
+        <th>Resume Similarity</th>
+
+        </thead>
+        <tbody>
+        {% for applicant in applicants %}
+            <tr>
+                <td>{{ applicant.user.first_name }}</td>
+                <td>{{ applicant.user.last_name }}</td>
+                <td>{{ applicant.user.email }}</td>
+                <td><a href="{{ applicant.resume_link }}">View</a></td>
+                <td></td>
+                <td>{{ applicant.similarity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+
+    </table>
+
+</div>
 {% endblock %}

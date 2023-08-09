@@ -20,10 +20,20 @@
                 <td>{{ job.start_date }}</td>
                 <td>{{ job.end_date }}</td>
                 <td>{{ job.num_applicants }}</td>
-                <td><input type="button" class="btn btn-success" value="Run Analysis"
-                           onclick="run_analysis({{ job.id }});"/>
-                    <a href="analysis-result.html/{{ job.id }}"><input type="button" class="btn btn-success" id="display_{{ job.id }}" style="display: none" value="Display Results"
-                /></a></td>
+            <td>
+            {% if job.num_applicants > 0 %}
+                {% if job.num_applicants > job.num_similarity_check %}
+                    <input type="button" class="btn btn-success" value="Run Analysis"
+                               onclick="run_analysis({{ job.id }});"/>
+                {% endif %}
+                {% if job.num_applicants == job.num_similarity_check %}
+                    <a href="/employer/analysis-result/{{ job.id }}"><input type="button" class="btn btn-primary"
+                                                                            id="display_{{ job.id }}"
+                                                                            value="Display Results"
+                    /></a>
+                {% endif %}
+            {%  endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -42,17 +52,17 @@
                 }
             })
                 .then(response => response.json())
-                    .then(data => {
-                        if ('result' in data) {
-                            if (data.result)
-                                document.getElementById('display_'+jobid).style.display="inline";
-                        } else {
-                            alert('Error uploading the PDF.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                .then(data => {
+                    if ('msg' in data) {
+                        alert(data.msg)
+                        document.getElementById('display_' + jobid).style.display = "inline";
+                    } else {
+                        alert('Error analyzing resumes.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
     </script>
 {% endblock %}

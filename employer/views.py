@@ -1,5 +1,8 @@
+import json
+
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, Q
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from sentence_transformers import util
@@ -11,6 +14,7 @@ from personality_test.models import Question
 
 from users.models import JobApplication
 from sentence_transformers import SentenceTransformer
+
 
 @login_required(login_url='/login/')
 def employer_dashboard(request):
@@ -99,8 +103,10 @@ def edit_job_detail(request, job_id):
 @login_required(login_url='/login/')
 def employer_dashboard(request):
     if request.method == 'GET':
-        jobs = Job.objects.annotate(num_applicants=Count('jobapplication'))
+        jobs = Job.objects.annotate(num_applicants=Count('jobapplication'),
+                                    num_similarity_check=Count('jobapplication', filter=~Q(jobapplication__similarity__isnull=True)))
         return render(request, 'employer/dashboard.html', {'jobs': jobs})
+
 
 @login_required(login_url='/login')
 def analyze(request):
@@ -109,10 +115,10 @@ def analyze(request):
         jobid = data.get('jobid')
 
         job = get_object_or_404(Job, id=jobid)
-        jobtxt =job.description
+        jobtxt = job.description
 
-        applicants=JobApplication.objects.filter(job__id=jobid)
-        resumestxt=[]
+        applicants = JobApplication.objects.filter(job__id=jobid)
+        resumestxt = []
         for applicant in applicants:
             resumestxt.append(applicant.resume_text)
 
@@ -121,16 +127,27 @@ def analyze(request):
         query_embedding = model.encode(jobtxt)
         passage_embedding = model.encode(resumestxt)
 
-        similarity=util.dot_score(query_embedding, passage_embedding)
-
-        result=similarity.tolist()
-        index=0
+        similarity = util.dot_score(query_embedding, passage_embedding)
+        print(similarity)
+        result = similarity.tolist()
+        index = 0
         for applicant in applicants:
-            print(result[index][0])
-            applicant.similarity=result[index][0]
+            print(result[0][index])
+            applicant.similarity = result[0][index]
             applicant.save()
+            index+=1
 
-        return render(request, 'employer/dashboard.html')
+        return JsonResponse({"msg": "Resume analysis completed"})
+
+
+@login_required(login_url='/login')
+def analysis_result(request, job_id):
+    if request.method == 'GET':
+        applicants = JobApplication.objects.filter(job__id=job_id).order_by("-similarity")
+        job = Job.objects.filter(id = job_id)
+
+        return render(request, 'employer/analysis-result.html', {'applicants': applicants, 'job': job[0]})
+
 
 @login_required(login_url='/login/')
 def personality_test_edit(request):
