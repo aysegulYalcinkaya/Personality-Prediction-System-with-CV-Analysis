@@ -1,4 +1,5 @@
 from django import forms
+from personality_test.models import Question
 
 
 class JobForm(forms.Form):
@@ -11,3 +12,9 @@ class JobForm(forms.Form):
     requirements = forms.CharField()
     start_date = forms.DateField()
     end_date = forms.DateField()
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text', 'category']

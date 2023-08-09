@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personality Test Questioner</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles_personality.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-heading">Personality Test</h1>
+        <form id="personality-test-form" method="post">
+            {% csrf_token %}
+            {% for question in questions %}
+                {% with forloop.counter as question_number %}
+                <fieldset class="question">
+                    <p><strong>Question {{ question_number }}:</strong> {{ question.text }}</p>
+                    <div class="options">
+                        <label><input type="radio" name="response-{{ question.id }}" value="5" required>Strongly Agree</label>
+                        <label><input type="radio" name="response-{{ question.id }}" value="4">Agree</label>
+                        <label><input type="radio" name="response-{{ question.id }}" value="3">Neutral</label>
+                        <label><input type="radio" name="response-{{ question.id }}" value="2">Disagree</label>
+                        <label><input type="radio" name="response-{{ question.id }}" value="1">Strongly Disagree</label>
+                    </div>
+                </fieldset>
+                {% endwith %}
+            {% endfor %}
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+        <div id="results-container" style="display: none;">
+            <h2>Test Results</h2>
+            <div id="neuroticism"></div>
+            <div id="extroversion"></div>
+            <div id="openness"></div>
+            <div id="agreeableness"></div>
+            <div id="conscientiousness"></div>
+        </div>
+    </div>
+    <script src="{% static 'js/test_logic.js' %}"></script>
+</body>
+</html>

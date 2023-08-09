@@ -1,5 +1,3 @@
-import json
-
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,6 +6,9 @@ from sentence_transformers import util
 
 from employer.forms import JobForm
 from employer.models import Job
+from employer.forms import QuestionForm
+from personality_test.models import Question
+
 from users.models import JobApplication
 from sentence_transformers import SentenceTransformer
 
@@ -130,3 +131,32 @@ def analyze(request):
             applicant.save()
 
         return render(request, 'employer/dashboard.html')
+
+@login_required(login_url='/login/')
+def personality_test_edit(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = QuestionForm()
+
+    questions = Question.objects.all()
+    categorized_questions = {}
+
+    for category, _ in Question.CATEGORY_CHOICES:
+        categorized_questions[category] = questions.filter(category=category).order_by('id')
+
+    context = {
+        'form': form,
+        'categorized_questions': categorized_questions,
+    }
+
+    return render(request, 'employer/personality_test_edit.html', context)
+
+
+@login_required(login_url='/login/')
+def delete_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    question.delete()
+    return redirect('personality_test_edit')
