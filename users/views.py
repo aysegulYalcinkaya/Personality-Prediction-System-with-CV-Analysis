@@ -137,6 +137,7 @@ def available_job_list(request):
             jobs = jobs.filter(Q(summary__icontains=keywords_filter) or Q(description__icontains=keywords_filter) or Q(requirements__icontains=keywords_filter))
         # Annotate the jobs queryset with a BooleanField indicating whether the user has applied for each job
         user = request.user if request.user.is_authenticated else None
+        personality_test_score = UserScore.objects.filter(user__id=user.id)
 
         # Subquery to get a list of job IDs that the user has applied for
         applied_job_ids = JobApplication.objects.filter(user=user).values('job_id')
@@ -149,7 +150,7 @@ def available_job_list(request):
                 output_field=models.BooleanField()
             )
         )
-        return render(request, 'job-list.html', {'jobs': jobs})
+        return render(request, 'job-list.html', {'jobs': jobs,'personality':(len(personality_test_score))})
 
 
 @login_required(login_url='/login/')

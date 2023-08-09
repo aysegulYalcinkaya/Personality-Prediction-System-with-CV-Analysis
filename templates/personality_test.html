@@ -2,9 +2,14 @@
 
 {% block content %}
      <div class="inner justify-content-center">
+     {% if personality %}
+            <h3 class="center-heading">PERSONALITY TEST IS ALREADY SAVED</h3>
+     {% else %}
+
         <h3 class="center-heading">Personality Test</h3>
         <form id="personality-test-form" method="post">
             {% csrf_token %}
+
             {% for question in questions %}
                 {% with forloop.counter as question_number %}
                 <fieldset class="question mb-3">
@@ -37,5 +42,6 @@
             <div id="conscientiousness"></div>
         </div>
     </div>
+    {% endif %}
     <script src="/static/js/test_logic.js"></script>
 {% endblock %}

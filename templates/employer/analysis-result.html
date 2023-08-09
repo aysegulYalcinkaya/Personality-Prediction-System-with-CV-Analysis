@@ -11,7 +11,7 @@
             <th>Resume</th>
             <th>Personality Score</th>
             <th>Resume Similarity</th>
-
+            <th>Overall Score</th>
             </thead>
             <tbody>
             {% for applicant in applicants %}
@@ -28,7 +28,13 @@
                                 {{ applicant.similarity }}%
                             </div>
                         </div>
-                        </td>
+                    </td>
+                <td><div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ applicant.overall_score }}"
+                                 aria-valuemin="0" aria-valuemax="100" style="width:{{ applicant.overall_score }}%;background-color: #19d319">
+                                {{ applicant.overall_score }}%
+                            </div>
+                        </div></td>
                 </tr>
             {% endfor %}
             </tbody>

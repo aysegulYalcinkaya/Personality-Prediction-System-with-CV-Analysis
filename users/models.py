@@ -35,5 +35,6 @@ class JobApplication(models.Model):
     resume_link = models.TextField()
     similarity=models.DecimalField(null=True,decimal_places=2,max_digits=5)
     personality = models.DecimalField(null=True, decimal_places=2, max_digits=3)
+    overall_score=models.DecimalField(null=True,decimal_places=2,max_digits=5)
     def __str__(self):
         return f"Job Application - Job ID: {self.job_id}, User ID: {self.user_id}"

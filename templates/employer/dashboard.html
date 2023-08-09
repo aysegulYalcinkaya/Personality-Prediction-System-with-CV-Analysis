@@ -55,7 +55,7 @@
                 .then(data => {
                     if ('msg' in data) {
                         alert(data.msg)
-                        document.getElementById('display_' + jobid).style.display = "inline";
+                        window.location.reload()
                     } else {
                         alert('Error analyzing resumes.');
                     }

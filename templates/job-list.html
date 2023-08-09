@@ -42,10 +42,14 @@
                 <td>{{ job.start_date }}</td>
                 <td>{{ job.end_date }}</td>
                 <td>
-                    {% if job.applied %}
-                        <input type="button" disabled class="btn btn-primary" value="Already Applied">
+                    {% if not personality %}
+                        <p>Take the personality test</p>
                     {% else %}
-                        <input type="button" class="btn btn-primary" value="Apply" onclick="apply({{ job.id }})">
+                        {% if job.applied %}
+                            <input type="button" disabled class="btn btn-primary" value="Already Applied">
+                        {% else %}
+                            <input type="button" class="btn btn-primary" value="Apply" onclick="apply({{ job.id }})">
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>
@@ -54,10 +58,10 @@
 
 
     </table>
-<script>
-function apply(id){
-     window.location.href = '/job-detail/'+id;
-}
-</script>
+    <script>
+        function apply(id) {
+            window.location.href = '/job-detail/' + id;
+        }
+    </script>
 
 {% endblock %}

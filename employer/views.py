@@ -1,5 +1,6 @@
 import json
 
+from _decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.http import JsonResponse
@@ -61,6 +62,8 @@ def job_list(request):
         expired_jobs = Job.objects.filter(end_date__lt=today)
         return render(request, 'employer/job-list.html', {'jobs': jobs, "expired_jobs": expired_jobs})
 
+def calculate_overall_score(similarity,personality):
+    return (personality*100/Decimal(7.5))*Decimal(0.30)+(Decimal(similarity)*Decimal(0.70))
 
 @login_required(login_url='/login/')
 def edit_job_detail(request, job_id):
@@ -145,6 +148,8 @@ def analyze(request):
         for applicant in applicants:
             print(result[0][index])
             applicant.similarity = "{:.2f}".format(result[0][index] * 100)
+            overall=calculate_overall_score(applicant.similarity,applicant.personality)
+            applicant.overall_score=overall
             applicant.save()
             index += 1
 
@@ -154,7 +159,7 @@ def analyze(request):
 @login_required(login_url='/login')
 def analysis_result(request, job_id):
     if request.method == 'GET':
-        applicants = JobApplication.objects.filter(job__id=job_id).order_by("-similarity")
+        applicants = JobApplication.objects.filter(job__id=job_id).order_by("-overall_score")
         job = Job.objects.filter(id=job_id)
 
         return render(request, 'employer/analysis-result.html', {'applicants': applicants, 'job': job[0]})

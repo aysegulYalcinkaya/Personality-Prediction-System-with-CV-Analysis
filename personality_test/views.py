@@ -6,9 +6,11 @@ from .models import Question, UserResponse, UserScore
 
 def personality_test(request):
     questions = Question.objects.all()
+    user = request.user
+    personality_test_score=UserScore.objects.filter(user__id=user.id)
 
     if request.method == 'POST':
-        user = request.user
+
         responses = {}
 
         for question in questions:
@@ -41,5 +43,5 @@ def personality_test(request):
         userScore.save()
         return JsonResponse({"msg":"Personality Test saved"})
 
-    context = {'questions': questions}
+    context = {'questions': questions,'personality':(len(personality_test_score))}
     return render(request, 'personality_test.html', context)
