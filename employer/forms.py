@@ -3,7 +3,7 @@ from personality_test.models import Question
 
 
 class JobForm(forms.Form):
-    id=forms.IntegerField()
+    id=forms.IntegerField(required=False)
     title = forms.CharField()
     company = forms.CharField()
     location = forms.CharField()

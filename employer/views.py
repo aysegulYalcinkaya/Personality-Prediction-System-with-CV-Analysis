@@ -26,7 +26,9 @@ def employer_dashboard(request):
 def create_job(request):
     if request.method == 'POST':
         form = JobForm(request.POST)
+        print(form)
         if form.is_valid():
+            print("form valid")
             title = form.cleaned_data['title']
             company = form.cleaned_data['company']
             location = form.cleaned_data['location']

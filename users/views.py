@@ -21,9 +21,11 @@ from botocore.exceptions import NoCredentialsError
 AWS_ACCESS_KEY_ID = 'AKIARSWFGF3EDTXQKJ66'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_BUCKET_NAME = 'cvanalysis-bucket'
-AWS_S3_REGION_NAME ='us-east-2'
+AWS_S3_REGION_NAME = 'us-east-2'
 
-s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY, region_name=AWS_S3_REGION_NAME)
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                  region_name=AWS_S3_REGION_NAME)
+
 
 def register(request):
     if request.method == 'POST':
@@ -84,11 +86,13 @@ def login_view(request):
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
-@ login_required(login_url='/login/')
+
+@login_required(login_url='/login/')
 def dashboard(request):
     return render(request, 'dashboard.html')
 
-@ login_required(login_url='/login/')
+
+@login_required(login_url='/login/')
 def account_view(request):
     user = request.user
     if request.method == 'POST':
@@ -106,7 +110,7 @@ def account_view(request):
             state = form.cleaned_data['state']
             phone_number = form.cleaned_data['phone_number']
 
-            if password!="":
+            if password != "":
                 user.password = password
             user.first_name = first_name
             user.last_name = last_name
@@ -120,6 +124,7 @@ def account_view(request):
 
         # Render the template with the user data
     return render(request, 'account.html', {'user': user})
+
 
 @login_required(login_url='/login/')
 def available_job_list(request):
@@ -136,7 +141,8 @@ def available_job_list(request):
         if location_filter:
             jobs = jobs.filter(Q(location__icontains=location_filter))
         if keywords_filter:
-            jobs = jobs.filter(Q(summary__icontains=keywords_filter) or Q(description__icontains=keywords_filter) or Q(requirements__icontains=keywords_filter))
+            jobs = jobs.filter(Q(summary__icontains=keywords_filter) or Q(description__icontains=keywords_filter) or Q(
+                requirements__icontains=keywords_filter))
         # Annotate the jobs queryset with a BooleanField indicating whether the user has applied for each job
         user = request.user if request.user.is_authenticated else None
         personality_test_score = UserScore.objects.filter(user__id=user.id)
@@ -152,17 +158,17 @@ def available_job_list(request):
                 output_field=models.BooleanField()
             )
         )
-        return render(request, 'job-list.html', {'jobs': jobs,'personality':(len(personality_test_score))})
+        return render(request, 'job-list.html', {'jobs': jobs, 'personality': (len(personality_test_score))})
 
 
 @login_required(login_url='/login/')
 def job_detail(request, job_id):
     job = get_object_or_404(Job, id=job_id)
+    user = request.user if request.user.is_authenticated else None
+    personality_test_score = UserScore.objects.filter(user__id=user.id)
+    return render(request, 'job-detail.html', {'job': job, 'personality': (len(personality_test_score))})
 
-    context = {
-        'job': job
-    }
-    return render(request, 'job-detail.html', context)
+
 def extract_text_from_pdf(pdf_file):
     text = ""
     pdf_reader = PyPDF2.PdfReader(pdf_file)
@@ -174,58 +180,60 @@ def extract_text_from_pdf(pdf_file):
     print(text)
     return text
 
-def calculate_personality_result(job,personality_test):
-    personality=[]
+
+def calculate_personality_result(job, personality_test):
+    personality = []
     print(job)
     personality.append({job.personality_1: 0.75})
     personality.append({job.personality_2: 0.50})
     personality.append({job.personality_3: 0.25})
-    result=0
+    result = 0
     for per in personality:
         personality_trait = list(per.keys())[0]  # Extract the personality trait
         weight = list(per.values())[0]  # Extract the weight
-        if personality_trait.lower()=="neuroticism":
+        if personality_trait.lower() == "neuroticism":
             result += personality_test.neuroticism * Decimal(weight)
-        elif personality_trait.lower()=="extroversion":
+        elif personality_trait.lower() == "extroversion":
             result += personality_test.extroversion * Decimal(weight)
-        elif personality_trait.lower()=="agreeableness":
+        elif personality_trait.lower() == "agreeableness":
             result += personality_test.agreeableness * Decimal(weight)
-        elif personality_trait.lower()=="conscientiousness":
+        elif personality_trait.lower() == "conscientiousness":
             result += personality_test.conscientiousness * Decimal(weight)
-        elif personality_trait.lower()=="openness":
+        elif personality_trait.lower() == "openness":
             result += personality_test.openness * Decimal(weight)
         print(result)
     return "{:.2f}".format(result)
 
+
 @login_required(login_url='/login/')
 def upload_pdf(request):
-
     if request.method == 'POST' and request.FILES['pdf_file']:
         pdf_file = request.FILES['pdf_file']
         try:
 
             text = extract_text_from_pdf(pdf_file)
 
-            job_id=int(request.POST.get('job_id'))
+            job_id = int(request.POST.get('job_id'))
             job = get_object_or_404(Job, id=job_id)
-            user_id=request.user.id
-
+            user_id = request.user.id
 
             timestamp = int(time.time())
             pdf_filename = f"{timestamp}_{pdf_file.name}"
             with pdf_file.open(mode='rb') as pdf_file_obj:
-                s3.upload_fileobj(pdf_file_obj, AWS_BUCKET_NAME, pdf_filename, ExtraArgs={'ContentType': 'application/pdf'})
+                s3.upload_fileobj(pdf_file_obj, AWS_BUCKET_NAME, pdf_filename,
+                                  ExtraArgs={'ContentType': 'application/pdf'})
 
             # Construct the S3 URL for the uploaded PDF
             pdf_url = f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{pdf_filename}"
 
-            personality_test=get_object_or_404(UserScore, user_id=user_id)
-            personality=calculate_personality_result(job,personality_test)
-            job_application = JobApplication(job=job, user=request.user, resume_text=text, resume_link=pdf_url,personality=personality)
+            personality_test = get_object_or_404(UserScore, user_id=user_id)
+            personality = calculate_personality_result(job, personality_test)
+            job_application = JobApplication(job=job, user=request.user, resume_text=text, resume_link=pdf_url,
+                                             personality=personality)
             job_application.save()
 
             return JsonResponse({'message': 'Resume uploaded successfully'})
-        except NoCredentialsError:
-            return JsonResponse({'error': 'AWS credentials not available.'})
+        except:
+            return JsonResponse({'error': 'Resume cannot be uploaded'})
 
     return render(request, 'job-list.html')
