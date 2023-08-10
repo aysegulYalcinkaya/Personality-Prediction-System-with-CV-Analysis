@@ -35,6 +35,9 @@ def create_job(request):
             requirements = form.cleaned_data['requirements']
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
+            personality_1 = form.cleaned_data['personality_1']
+            personality_2 = form.cleaned_data['personality_2']
+            personality_3 = form.cleaned_data['personality_3']
 
             job = Job()
             job.title = title
@@ -45,6 +48,9 @@ def create_job(request):
             job.requirements = requirements
             job.start_date = start_date
             job.end_date = end_date
+            job.personality_1 = personality_1
+            job.personality_2 = personality_2
+            job.personality_3 = personality_3
 
             job.save()
 
